@@ -1,0 +1,27 @@
+/* Exact reference styling over Bootstrap's grid, controls and components. */
+.container.wrap{width:100%;max-width:1180px}
+.hero-grid.row{--bs-gutter-x:0;--bs-gutter-y:0;display:flex;margin:0 auto;gap:44px}
+.hero-grid.row>.hero-copy{width:calc((100% - 44px)*.575);padding:0;margin:0}
+.hero-grid.row>.form-card{width:calc((100% - 44px)*.425);padding:26px;margin:0}
+.grid.row{--bs-gutter-x:0;--bs-gutter-y:0;display:flex;margin-left:0;margin-right:0;gap:22px}
+.grid.row>.card{width:calc((100% - 66px)/4);padding:0;margin:0}
+.btn{font-size:17px;font-weight:400;line-height:1.65;vertical-align:baseline;text-align:start;transition:none}
+.card{min-width:auto;word-wrap:normal;background-clip:border-box;--bs-card-spacer-y:0;--bs-card-spacer-x:0}
+.form-control{display:inline-block;appearance:auto;line-height:inherit;color:inherit;transition:none;box-shadow:none}
+.form-control:focus{color:inherit;background:#fff;box-shadow:none}
+.form-control::placeholder{color:fieldtext;opacity:.54}
+.form-card.col-12{flex:none}
+.main-nav.collapse{display:block}
+.dd.collapse:not(.show){display:none}
+.dd.collapse.show{display:block}
+.collapsing{height:auto!important;overflow:visible;transition:none}
+@media(min-width:1001px){.has-dd:hover>.dd.collapse,.has-dd:focus-within>.dd.collapse{display:block}}
+@media(max-width:1000px){
+.hero-grid.row>.hero-copy,.hero-grid.row>.form-card{width:100%}
+.grid.row>.card{width:calc((100% - 22px)/2)}
+.main-nav.collapse:not(.show){display:none}
+.main-nav.collapse.show{display:block}
+}
+@media(max-width:560px){.grid.row>.card{width:100%}}
+button.btn{font-size:13.3333px;line-height:normal}
+button.btn{text-align:center}
