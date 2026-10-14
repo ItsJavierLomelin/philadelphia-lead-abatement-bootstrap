@@ -1,4 +1,9 @@
 (function(){
+// Keep existing exported pages compatible with Bootstrap dropdown toggles.
+document.querySelectorAll('.dd-btn[data-bs-target]').forEach(function(button){
+ var menu=button.closest('.has-dd')?.querySelector('ul.dd');
+ if(menu){menu.id=button.getAttribute('data-bs-target').slice(1);menu.classList.add('collapse')}
+});
 var b=document.getElementById('burger'),n=document.getElementById('mnav');
 if(b&&n){
  function state(o){b.setAttribute('aria-expanded',String(o));b.setAttribute('aria-label',o?'Close menu':'Open menu');document.body.style.overflow=o?'hidden':''}
