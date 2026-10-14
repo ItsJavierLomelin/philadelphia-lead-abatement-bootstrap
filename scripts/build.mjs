@@ -15,7 +15,7 @@ for(const [route,template] of Object.entries(pages)) {
  html=html.replace('<link rel="stylesheet" href="/assets/css/site.css">','<link rel="stylesheet" href="/assets/vendor/bootstrap/bootstrap.custom.min.css">\n<link rel="stylesheet" href="/assets/css/site.css">\n<link rel="stylesheet" href="/assets/css/bootstrap-fidelity.css">');
  html=html.replace('class="wrap head-in"','class="container wrap head-in"')
  .replace('class="main-nav"','class="main-nav collapse"')
- .replace('class="dd"','class="dd collapse"')
+ .replaceAll('class="dd"','class="dd collapse"')
  .replace(/class="dd-btn"/g,'class="dd-btn" data-bs-toggle="collapse"')
  .replace('id="burger" class="burger"','id="burger" class="burger" data-bs-toggle="collapse" data-bs-target="#mnav"')
  .replace(/<ul class="dd collapse">/g,()=>`<ul class="dd collapse" id="submenu-${++menuId}">`);
