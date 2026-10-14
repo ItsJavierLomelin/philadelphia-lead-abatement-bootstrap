@@ -24,14 +24,11 @@ jobs:
         run: |
           set -e
           git clone --depth 1 https://github.com/ItsJavierLomelin/cleveland-lead-abatement-bootstrap.git /tmp/clev
-          git clone --depth 1 https://github.com/ItsJavierLomelin/philadelphia-lead-abatement-pros.git /tmp/src
           cp -r /tmp/clev/scripts /tmp/clev/package.json .
           mkdir -p assets/css assets/js assets/img source config
           cp -r /tmp/clev/assets/vendor assets/vendor
           cp /tmp/clev/assets/css/bootstrap-fidelity.css /tmp/clev/assets/css/site.css assets/css/
           cp -r /tmp/clev/assets/js/. assets/js/
-          cp -r /tmp/src/public/assets/img/. assets/img/
-          cp /tmp/src/src/data/pages.json source/pages.json
           sed -i -e 's/; stock images are illustrative, not completed projects//g' -e 's/ *Stock images are illustrative, not completed projects\.//g' -e 's/ *Review preview with a dummy phone number\.//g' -e 's/ *This is a review preview\.//g' -e 's/The phone number is a dummy number while the site is in review preview, and details/Details/g' -e 's/, not an\? [A-Za-z -]* project photo//g' -e 's/Illustrative \(.\)/\u\1/g' source/pages.json
           cat > config/site.mjs <<'CFG'
           // Edit phone here and run: npm run build
