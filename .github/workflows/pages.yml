@@ -1,0 +1,93 @@
+name: Build and deploy Bootstrap preview
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Assemble Bootstrap site from source repos
+        run: |
+          set -e
+          git clone --depth 1 https://github.com/ItsJavierLomelin/cleveland-lead-abatement-bootstrap.git /tmp/clev
+          git clone --depth 1 https://github.com/ItsJavierLomelin/philadelphia-lead-abatement-pros.git /tmp/src
+          cp -r /tmp/clev/scripts /tmp/clev/package.json .
+          mkdir -p assets/css assets/js assets/img source config
+          cp -r /tmp/clev/assets/vendor assets/vendor
+          cp /tmp/clev/assets/css/bootstrap-fidelity.css /tmp/clev/assets/css/site.css assets/css/
+          cp -r /tmp/clev/assets/js/. assets/js/
+          cp -r /tmp/src/public/assets/img/. assets/img/
+          cp /tmp/src/src/data/pages.json source/pages.json
+          cat > config/site.mjs <<'CFG'
+          // Edit phone here and run: npm run build
+          export const site = {
+            name: 'Philadelphia Lead Abatement Pros',
+            phone: '(877) 378-5996',
+            origin: 'https://itsjavierlomelin.github.io',
+            base: '/philadelphia-lead-abatement-bootstrap/',
+          };
+          CFG
+          cat > README.md <<'MD'
+          # Philadelphia Lead Abatement Pros (Bootstrap)
+
+          Bootstrap build of Philadelphia Lead Abatement Pros. Content comes from the Astro repo
+          `philadelphia-lead-abatement-pros`; the builder, Bootstrap vendor files and fidelity CSS
+          come from `cleveland-lead-abatement-bootstrap`.
+
+          - Edit the phone number in `config/site.mjs`, then run `npm run build`.
+          - Page templates live in `source/pages.json` (route -> full HTML).
+          - Open `index.html` directly or `npm start` for a local server.
+          - Live preview: https://itsjavierlomelin.github.io/philadelphia-lead-abatement-bootstrap/
+          MD
+          node <<'NODE'
+          const fs = require('fs');
+          const p = JSON.parse(fs.readFileSync('source/pages.json', 'utf8'));
+          for (const [route, tplText] of Object.entries(p)) {
+            const noindex = route === 'privacy/' || route === 'terms/' || route === '404.html';
+            const want = noindex ? 'noindex, follow' : 'index, follow';
+            p[route] = tplText.replace(/<meta name="robots" content="(no)?index, follow">/, `<meta name="robots" content="${want}">`);
+          }
+          fs.writeFileSync('source/pages.json', JSON.stringify(p, null, 2));
+          NODE
+          npm run build
+          printf 'User-agent: *\nAllow: /\n' > robots.txt
+      - name: Commit assembled site
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'nothing to commit'
+          else
+            git commit -m 'Assemble Philadelphia Lead Abatement Pros Bootstrap site [skip ci]'
+            git pull --rebase origin main
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
