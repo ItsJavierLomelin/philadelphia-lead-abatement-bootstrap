@@ -32,6 +32,7 @@ jobs:
           cp -r /tmp/clev/assets/js/. assets/js/
           cp -r /tmp/src/public/assets/img/. assets/img/
           cp /tmp/src/src/data/pages.json source/pages.json
+          sed -i 's/ *Stock images are illustrative, not completed projects\.//g' source/pages.json
           cat > config/site.mjs <<'CFG'
           // Edit phone here and run: npm run build
           export const site = {
